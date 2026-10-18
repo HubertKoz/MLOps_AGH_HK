@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock, patch
 
 import numpy as np
-import pytest
 
 
 def test_sentiment_request_default_labels():

@@ -2,3 +2,11 @@
 .env
 **/.env
 **/*solution.ipynb
+
+**/__pycache__/
+**/*.pyc
+*.joblib
+*.asc
+*.zip
+.ruff_cache
+.mypy_cache

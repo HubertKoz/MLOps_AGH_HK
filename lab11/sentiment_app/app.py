@@ -1,16 +1,14 @@
 import os
-import json
-import numpy as np
 from contextlib import asynccontextmanager
 from pathlib import Path
+
+import numpy as np
 import onnxruntime as ort
 from fastapi import FastAPI, Request
 from mangum import Mangum
 from tokenizers import Tokenizer
 
 from sentiment_app.models import SentimentRequest, SentimentResponse
-
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_ONNX_PATH = BASE_DIR / "model/onnx/zeroshot.onnx"
@@ -32,7 +30,7 @@ class ZeroShotSentimentClassifier:
             encoded = self.tokenizer.encode(text, hypothesis, add_special_tokens=True)
             input_ids = np.array([encoded.ids], dtype=np.int64)
             attention_mask = np.array([encoded.attention_mask], dtype=np.int64)
-            ort_inputs = {"input_ids": input_ids, "attention_mask": attention_mask}   
+            ort_inputs = {"input_ids": input_ids, "attention_mask": attention_mask}
             logits = self.session.run(None, ort_inputs)[0]
             scores.append(float(logits[0, ENTAILMENT_IDX]))
         return labels[int(np.argmax(scores))]
@@ -42,7 +40,9 @@ class ZeroShotSentimentClassifier:
 async def lifespan(app: FastAPI):
     onnx_path = os.environ.get("ONNX_PATH", str(DEFAULT_ONNX_PATH))
     tokenizer_path = os.environ.get("TOKENIZER_PATH", str(DEFAULT_TOKENIZER_PATH))
-    app.state.classifier = ZeroShotSentimentClassifier(onnx_path=onnx_path, tokenizer_path=tokenizer_path)
+    app.state.classifier = ZeroShotSentimentClassifier(
+        onnx_path=onnx_path, tokenizer_path=tokenizer_path
+    )
     yield
     app.state.classifier = None
 
