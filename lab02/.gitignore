@@ -1,0 +1,7 @@
+*.jsonl
+*.csv
+*.json
+*.parquet
+*.tsv
+*.db
+*db.wal
