@@ -5,3 +5,6 @@
 *.tsv
 *.db
 *db.wal
+*.duckdb
+data/
+data_homework/
